@@ -3,7 +3,7 @@ from _thread import start_new_thread
 from datetime import datetime
 
 
-def read_data(conn):
+def read_data(conn) -> str:
     """
     Reads all data from connection and returns it.
     :param conn: Connection to read from.
@@ -19,7 +19,7 @@ def read_data(conn):
     return all_bin_data.decode()
 
 
-def _print_client_information(client):
+def _print_client_information(client) -> None:
     """
     Prints ip address and port of client, as well as current timestamp.
     """
@@ -48,7 +48,7 @@ class TcpServer:
         self.tcp_socket = None
         self.is_running = False
 
-    def open_socket(self):
+    def open_socket(self) -> None:
         """
         Opens the socket and starts listening, but won't handle requests.
         """
@@ -57,7 +57,7 @@ class TcpServer:
         self.tcp_socket.listen(1)
         print("Listening on", self._get_binding_info())
 
-    def run(self, in_thread=True):
+    def run(self, in_thread=True) -> None:
         """
         Runs the tcp server, by accepting all requests and handle them by calling process_request.
         The function process_request should be set initially,
@@ -68,16 +68,19 @@ class TcpServer:
         else:
             self._process_requests()
 
-    def stop(self):
+    def stop_listening(self) -> None:
+        """
+        Stops listening for requests, but the socket won't be removed.
+        """
         self.is_running = False
 
-    def _process_requests(self):
+    def _process_requests(self) -> None:
         self.is_running = True
         while self.is_running:
             conn_information = self.tcp_socket.accept()
             start_new_thread(self._handle_client, conn_information)
 
-    def _handle_client(self, conn, client):
+    def _handle_client(self, conn, client) -> None:
         _print_client_information(client)
         try:
             recv_msg = read_data(conn)
@@ -89,5 +92,5 @@ class TcpServer:
         finally:
             conn.close()
 
-    def _get_binding_info(self):
+    def _get_binding_info(self) -> str:
         return ":".join(map(str, self.sock_information))

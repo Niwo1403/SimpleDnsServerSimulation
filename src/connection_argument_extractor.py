@@ -1,7 +1,10 @@
 import re
 
 
-def scan_pattern(pattern, argument):
+def scan_pattern(pattern, argument) -> str:
+    """
+    Returns the match if found, else None.
+    """
     matched_str = None
     match = re.match(pattern, argument)
     if match is not None:
@@ -24,7 +27,7 @@ class ConnectionArgumentExtractor:
         self.ip_address = None
         self.port = default_port
 
-    def get_arguments(self):
+    def get_arguments(self) -> (str, str):
         """
         Get the connection information from the argv, which was set initially.
         The first match of an ip address will be used as ip address,
@@ -35,6 +38,18 @@ class ConnectionArgumentExtractor:
             self._process_argument(argument)
         return self.ip_address, self.port
 
-    def _process_argument(self, argument):
-        self.ip_address = self.ip_address or scan_pattern(ConnectionArgumentExtractor.IP_PATTERN, argument)
+    def _process_argument(self, argument) -> None:
+        ip_initially_missing = self._is_ip_missing()
+        if ip_initially_missing:
+            self._scan_for_ip_address(argument)
+        if not ip_initially_missing or self._is_ip_missing():
+            self._scan_for_port(argument)
+
+    def _is_ip_missing(self) -> bool:
+        return self.ip_address is None
+
+    def _scan_for_port(self, argument) -> None:
         self.port = scan_pattern(ConnectionArgumentExtractor.PORT_PATTERN, argument) or self.port
+
+    def _scan_for_ip_address(self, argument) -> None:
+        self.ip_address = self.ip_address or scan_pattern(ConnectionArgumentExtractor.IP_PATTERN, argument)
