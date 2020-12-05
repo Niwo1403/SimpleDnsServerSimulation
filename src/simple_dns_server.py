@@ -2,7 +2,7 @@ from sys import argv
 from time import sleep
 
 from connection_argument_extractor import ConnectionArgumentExtractor
-from simple_server import SimpleServer
+from request_server import RequestServer
 
 
 class SimpleDnsServer:
@@ -10,7 +10,7 @@ class SimpleDnsServer:
         self.ip_address = ip_address
         self.port = port
         self._ensure_connection_information()
-        self.server = SimpleServer(self.ip_address, self.port, self.handle_request, log_requests=True)  # TODO: Deactivate logging later.
+        self.server = RequestServer(self.ip_address, self.port, self.handle_request, log_requests=True)  # TODO: Deactivate logging later.
 
     def run(self) -> None:
         """

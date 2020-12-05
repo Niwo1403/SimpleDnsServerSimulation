@@ -3,17 +3,17 @@ from _thread import start_new_thread
 from datetime import datetime
 
 
-def read_data(tcp_conn) -> str:
+def read_tcp_data(tcp_conn) -> str:
     """
     Reads all data from a tcp connection and returns it.
     :param tcp_conn: Connection to read from.
     :return: The read text.
     """
     recv_data = []
-    tmp_data = tcp_conn.recv(SimpleServer.TCP_BUFF_SIZE)
-    while len(recv_data) == SimpleServer.TCP_BUFF_SIZE:
+    tmp_data = tcp_conn.recv(RequestServer.TCP_BUFF_SIZE)
+    while len(recv_data) == RequestServer.TCP_BUFF_SIZE:
         recv_data.append(tmp_data)
-        tmp_data = tcp_conn.recv(SimpleServer.TCP_BUFF_SIZE)
+        tmp_data = tcp_conn.recv(RequestServer.TCP_BUFF_SIZE)
     recv_data.append(tmp_data)
     all_bin_data = b"".join(recv_data)
     return all_bin_data.decode()
@@ -33,11 +33,13 @@ def _print_client_information(client) -> None:
     )
 
 
-class SimpleServer:
+class RequestServer:
     """
-    A simple tcp or udp server, which will accept all requests,
+    A simple TCP or UDP server, which will accept all requests,
     processes them with the initially set process_request function
     and sends the return of this function as response.
+    The server will close the connection after responding once,
+    so TCP and UDP can be used.
     """
 
     TCP_BUFF_SIZE = 1024
@@ -90,7 +92,7 @@ class SimpleServer:
             start_new_thread(self._handle_new_client, conn_information)
 
     def _accept_request(self):
-        return self.socket.recvfrom(SimpleServer.UDP_BUFF_SIZE)\
+        return self.socket.recvfrom(RequestServer.UDP_BUFF_SIZE)\
             if self.used_udp else self.socket.accept()
 
     def _handle_new_client(self, conn, client) -> None:
@@ -103,7 +105,7 @@ class SimpleServer:
                 conn.close()
 
     def _handle_request(self, conn, client):
-        recv_msg = conn.decode() if self.used_udp else read_data(conn)
+        recv_msg = conn.decode() if self.used_udp else read_tcp_data(conn)
         if self.log_requests:
             print(recv_msg)
         reply = self.process_request(recv_msg).encode()
