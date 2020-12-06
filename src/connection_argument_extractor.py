@@ -20,7 +20,7 @@ class ConnectionArgumentExtractor:
     """
 
     IP_PATTERN = r"^(\d{1,3}\.){3}\d{1,3}$"
-    PORT_PATTERN = r"^\d{1,4}$"
+    PORT_PATTERN = r"^\d{1,5}$"
 
     def __init__(self, argv, default_port=53):
         self.argv = argv

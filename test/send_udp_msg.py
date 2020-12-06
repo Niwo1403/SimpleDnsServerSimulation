@@ -19,4 +19,5 @@ clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientSock.sendto(msg.encode(), (ip_address, port))
 data, server = clientSock.recvfrom(4096)
 
-print("Data:", data.decode(), "IP & port:", server, sep="\n")
+sep = "----------"
+print("Data:", sep, data.decode(), sep, "server IP & port:", server, sep="\n")
