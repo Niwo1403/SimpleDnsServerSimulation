@@ -1,0 +1,22 @@
+{
+  "DnsConfig": {
+    "127.0.0.11": "root",
+    "127.0.0.12": "telematik",
+    "127.0.0.13": "switch.telematik",
+    "127.0.0.14": "router.telematik",
+    "127.0.0.15": "fuberlin",
+    "127.0.0.16": "homework.fuberlin",
+    "127.0.0.17": "pcpools.fuberlin"
+  },
+  "HttpConfig": {
+    "127.0.0.1": "www.switch.telematik",
+    "127.0.0.2": "mail.switch.telematik",
+    "127.0.0.3": "news.router.telematik",
+    "127.0.0.4": "shop.router.telematik",
+    "127.0.0.5": "easy.homework.fuberlin",
+    "127.0.0.6": "hard.homework.fuberlin",
+    "127.0.0.7": "linux.pcpools.fuberlin",
+    "127.0.0.8": "macos.pcpools.fuberlin",
+    "127.0.0.9": "windows.pcpools.fuberlin"
+  }
+}

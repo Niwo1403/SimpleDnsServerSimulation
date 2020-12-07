@@ -1,20 +1,34 @@
+# std libraries
 from sys import argv
 from time import sleep
-
+# local libraries
 from connection_argument_extractor import ConnectionArgumentExtractor
 from request_server import RequestServer
 from dns.resource_record.resource_record_manager import ResourceRecordManager
 
 
 class SimpleDnsServer:
-    def __init__(self, zone_file, ip_address, port=53053):
+    """
+    A DNS server, which handles all incoming DNS lookup request.
+    The class only support a very simple version of DNS requests.
+    It will load it's resource records from a zone file,
+    which must be passed initially as well as the ip address.
+    The run() method can be used to start the server.
+    The handle_request() method will be called for incoming requests
+    to process them.
+    """
+
+    def __init__(self, zone_file: str, ip_address: str, port: int = 53053):
         self.record_manager = ResourceRecordManager.from_file(zone_file)
         self.ip_address = ip_address
         self.port = port
         self._ensure_connection_information()
-        self.server = RequestServer(self.ip_address, self.port, self.handle_request, log_requests=True)  # TODO: Deactivate logging later.
+        self.server = RequestServer(
+            self.ip_address, self.port,
+            self.handle_request, log_requests=True
+        )  # TODO: Deactivate logging later.
 
-    def run(self, in_background=True) -> None:
+    def run(self, in_background: bool = True) -> None:
         """
         Opens the socket and starts receiving requests.
         Will only return after KeyboardInterrupt.
@@ -25,7 +39,7 @@ class SimpleDnsServer:
         if not in_background:
             self.run_till_interrupt()
 
-    def handle_request(self, request) -> str:
+    def handle_request(self, request: str) -> str:
         """
         Called to handle a request.
         Should find the ip address of the domain.
@@ -34,9 +48,13 @@ class SimpleDnsServer:
         """
         record = self.record_manager.get_match(request)
         # TODO: handle the actual request
-        return f"HTTP/1.1 200 OK\r\n\r\n{record.value if record is not None else '404'}"
+        return "\r\n".join((
+            "HTTP/1.1 200 OK",
+            "",
+            record.value if record is not None else '404'
+        ))
 
-    def stop_listening(self):
+    def stop_listening(self) -> None:
         """
         Stops listening for requests.
         The socket won't be removed.
@@ -55,7 +73,8 @@ class SimpleDnsServer:
     def _ensure_connection_information(self) -> None:
         if type(self.port) == str and self.port.isnumeric():
             self.port = int(self.port)
-        assert type(self.ip_address) == str and len(self.ip_address) >= 7, "Ip address missing."
+        assert type(self.ip_address) == str and len(self.ip_address) >= 7, \
+            "Ip address missing."
         assert type(self.port) == int, "Port must be numeric."
 
 
@@ -65,5 +84,8 @@ def started_as_main() -> bool:
 
 if started_as_main():
     arg_ip, arg_port = ConnectionArgumentExtractor(argv).get_arguments()
-    dns_server = SimpleDnsServer("../../rsrc/zone_files/root.zone", arg_ip, arg_port)
+    dns_server = SimpleDnsServer(
+        "../../rsrc/zone_files/root.zone",
+        arg_ip, arg_port
+    )
     dns_server.run(in_background=False)

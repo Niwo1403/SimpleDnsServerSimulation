@@ -1,15 +1,5 @@
+# std libraries
 import re
-
-
-def scan_pattern(pattern, argument) -> str:
-    """
-    Returns the match if found, else None.
-    """
-    matched_str = None
-    match = re.match(pattern, argument)
-    if match is not None:
-        matched_str = match.group(0)
-    return matched_str
 
 
 class ConnectionArgumentExtractor:
@@ -22,7 +12,18 @@ class ConnectionArgumentExtractor:
     IP_PATTERN = r"^(\d{1,3}\.){3}\d{1,3}$"
     PORT_PATTERN = r"^\d{1,5}$"
 
-    def __init__(self, argv, default_port=53):
+    @staticmethod
+    def scan_pattern(pattern, argument: str) -> str:
+        """
+        Returns the match if found, else None.
+        """
+        matched_str = None
+        match = re.match(pattern, argument)
+        if match is not None:
+            matched_str = match.group(0)
+        return matched_str
+
+    def __init__(self, argv: [str], default_port: int = 53):
         self.argv = argv
         self.ip_address = None
         self.port = default_port
@@ -38,7 +39,7 @@ class ConnectionArgumentExtractor:
             self._process_argument(argument)
         return self.ip_address, self.port
 
-    def _process_argument(self, argument) -> None:
+    def _process_argument(self, argument: str) -> None:
         ip_initially_missing = self._is_ip_missing()
         if ip_initially_missing:
             self._scan_for_ip_address(argument)
@@ -48,8 +49,12 @@ class ConnectionArgumentExtractor:
     def _is_ip_missing(self) -> bool:
         return self.ip_address is None
 
-    def _scan_for_port(self, argument) -> None:
-        self.port = scan_pattern(ConnectionArgumentExtractor.PORT_PATTERN, argument) or self.port
+    def _scan_for_port(self, argument: str) -> None:
+        self.port = self.scan_pattern(
+            ConnectionArgumentExtractor.PORT_PATTERN, argument
+        ) or self.port
 
-    def _scan_for_ip_address(self, argument) -> None:
-        self.ip_address = self.ip_address or scan_pattern(ConnectionArgumentExtractor.IP_PATTERN, argument)
+    def _scan_for_ip_address(self, argument: str) -> None:
+        self.ip_address = self.ip_address or self.scan_pattern(
+            ConnectionArgumentExtractor.IP_PATTERN, argument
+        )
