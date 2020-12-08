@@ -85,7 +85,7 @@ def started_as_main() -> bool:
 if started_as_main():
     arg_ip, arg_port = ConnectionArgumentExtractor(argv).get_arguments()
     dns_server = SimpleDnsServer(
-        "../../rsrc/zone_files/root.zone",
+        "../rsrc/zone_files/root.zone",
         arg_ip, arg_port
     )
     dns_server.run(in_background=False)
