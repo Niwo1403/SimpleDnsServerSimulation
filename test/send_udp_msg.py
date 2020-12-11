@@ -1,7 +1,8 @@
 # std libraries
 import socket
 from sys import argv
-
+# local
+from dns_message import DnsMessage
 
 if len(argv) < 3:
     ip_address = input("Enter ip address: ")
@@ -16,9 +17,13 @@ else:
         msg = input("Enter text to send: ")
 port = int(port)
 
+dns_msg = DnsMessage.new_dns_request()
+dns_msg.set_req(msg)
+msg = dns_msg.build_message()
+
 clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientSock.sendto(msg.encode(), (ip_address, port))
 data, server = clientSock.recvfrom(4096)
 
 sep = "----------"
-print("Data:", sep, data.decode(), sep, "server IP & port:", server, sep="\n")
+print("Request:", msg, sep, "Data:", sep, data.decode(), sep, "server IP & port:", server, sep="\n")

@@ -1,5 +1,6 @@
 # local libraries
 from dns.resource_record.resource_record import ResourceRecord
+from dns_message import DnsMessage
 
 
 class ResourceRecordManager:
@@ -32,13 +33,14 @@ class ResourceRecordManager:
         for resource_record in resource_records:
             self.resource_records[resource_record.get_name()] = resource_record
 
-    def get_match(self, name: str) -> ResourceRecord or None:
+    def get_match(self, request: DnsMessage or str) -> ResourceRecord or None:
         """
         Returns the first resource record, which matches the name.
         If no match is found, None is returned.
         """
-        return self.resource_records[name] if name in self.resource_records \
-            else None
+        requested_name = request.get_requested_name() if type(request) != str else request
+        return self.resource_records[requested_name]\
+            if requested_name in self.resource_records else None
 
     def log_entries(self) -> None:
         for record in self.resource_records.values():

@@ -24,6 +24,11 @@ class DnsMessage:
         "NOTZONE": 9  # Name not in zone
     }
 
+    QRY_TYPES = {  # only some (the used ones)
+        "A": 1,
+        "NS": 2
+    }
+
     DEFAULT_SETTINGS = {
         "DNS": {
             "dns.a": None,  # IP Agresse
@@ -72,7 +77,7 @@ class DnsMessage:
         """
         dns_request = cls._get_basic_object(values)
         dns_req_defaults = cls.DEFAULT_SETTINGS["DNS_request"]
-        dns_request.set_values(dns_req_defaults)
+        dns_request.set_values(dns_req_defaults, replace=False)
         return dns_request
 
     @classmethod
@@ -84,7 +89,7 @@ class DnsMessage:
         """
         dns_response = cls._get_basic_object(values)
         dns_resp_defaults = DnsMessage.DEFAULT_SETTINGS["DNS_response"]
-        dns_response.set_values(dns_resp_defaults)
+        dns_response.set_values(dns_resp_defaults, replace=False)
         return dns_response
 
     @classmethod
@@ -122,9 +127,12 @@ class DnsMessage:
         """
         return self.values[key]
 
+    def set_empty_resp(self, authoritative: bool = True):
+        self.set_resp("", answers=0, set_positive_rcode=False, authoritative=authoritative)
+
     def set_resp(self, address: str,
                  answers: int = 1, authoritative: bool = True, set_positive_rcode: bool = True,
-                 ttl: int = 300, name_server_name: str or None = None) -> None:
+                 ttl: int = 0, name_server_name: str or None = None) -> None:
         """
         Sets the data for a response.
         :param address: The ip address.
@@ -148,7 +156,9 @@ class DnsMessage:
             value_updates["dns.flags.rcode"] = DnsMessage.R_CODES["NOERROR"]
         self.set_values(value_updates)
 
-    def set_req(self, name: str, name_server_record: bool = True, recursion_desired: bool or None = None) -> None:
+    def set_req(self,
+                name: str, name_server_record: bool = True,
+                recursion_desired: bool or None = None) -> None:
         """
         Sets the main data for a request.
         :param name: The domain to lookup.
@@ -162,6 +172,21 @@ class DnsMessage:
         if recursion_desired is not None:
             value_updates["dns.flags.recdesired"] = recursion_desired
         self.set_values(value_updates)
+
+    def is_recursion_desired(self) -> bool:
+        return self.values["dns.flags.recdesired"]
+
+    def get_requested_name(self) -> str:
+        return self.values["dns.qry.name"]
+
+    def get_requested_type(self) -> int:
+        return self.values["dns.qry.type"]
+
+    def match_type(self, other_type: str) -> bool:
+        return DnsMessage.QRY_TYPES[other_type] == self.get_requested_type()
+
+    def is_a_record_request(self) -> bool:
+        return self.get_requested_type() == DnsMessage.QRY_TYPES["A"]
 
     def _is_key_empty(self, key: str) -> bool:
         """

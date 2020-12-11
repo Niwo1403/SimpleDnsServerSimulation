@@ -63,10 +63,10 @@ class ResourceRecord:
     def __init__(self,
                  name: str, value: str,
                  rr_class: str = "IN", rr_type: str = "NS",
-                 ttl: str = "300"):
+                 ttl: str or int = 300):
         self.rr_type = rr_type
         self.rr_class = rr_class
-        self.ttl = ttl
+        self.ttl = int(ttl)
         self.name = name
         self.value = value
 
@@ -80,11 +80,14 @@ class ResourceRecord:
     def get_name(self) -> str:
         return self.name
 
+    def get_type(self) -> str:
+        return self.rr_type
+
     def _update_data_from_csv(self, values: [str]) -> None:
         ttl = self._get_first_numeric(values)
         if ttl is not None:
             values.remove(ttl)
-            self.ttl = ttl
+            self.ttl = int(ttl)
         self._update_string_flags(values)
 
     def _update_string_flags(self, values: [str]) -> None:
