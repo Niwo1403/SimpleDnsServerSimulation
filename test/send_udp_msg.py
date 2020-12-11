@@ -26,4 +26,4 @@ clientSock.sendto(msg.encode(), (ip_address, port))
 data, server = clientSock.recvfrom(4096)
 
 sep = "----------"
-print("Request:", msg, sep, "Data:", sep, data.decode(), sep, "server IP & port:", server, sep="\n")
+print("Request:", msg, sep, "Response:", data.decode(), sep, "server IP & port:", server, sep="\n")
