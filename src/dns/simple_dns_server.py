@@ -3,7 +3,7 @@ from sys import argv
 from time import sleep
 # local libraries
 from connection_argument_extractor import ConnectionArgumentExtractor
-from dns.resource_record.resource_record import ResourceRecord
+from dns.resource_record.record_match import RecordMatch
 from dns_message import DnsMessage
 from request_server import RequestServer
 from dns.resource_record.resource_record_manager import ResourceRecordManager
@@ -21,20 +21,14 @@ class SimpleDnsServer:
     """
 
     @staticmethod
-    def _match_types(record: ResourceRecord, request_msg: DnsMessage) -> bool:
-        found_match = False
-        if record is not None:
-            record_type = record.get_type()
-            found_match = request_msg.match_type(record_type)
-        return found_match
-
-    @staticmethod
-    def _dns_resp_from_match(match: ResourceRecord or None) -> DnsMessage:
-        matched_req = match is not None
+    def _dns_resp_from_match(match: RecordMatch) -> DnsMessage:
         dns_resp = DnsMessage.new_dns_response()
-        if matched_req:
-            possible_name = match.get_name() if match.get_type() == "NS" else None
-            dns_resp.set_resp(match.value, ttl=match.ttl, name_server_name=possible_name)
+        if match.found_record():
+            dns_resp.set_resp(
+                match.get_value(),
+                ttl=match.get_ttl(),
+                name_server_name=match.get_possible_name_server_name()
+            )
         else:
             dns_resp.set_empty_resp()
         return dns_resp
@@ -71,11 +65,10 @@ class SimpleDnsServer:
         dns_resp = self._dns_resp_from_match(match)
         return dns_resp.build_message()
 
-    def _get_match(self, request: str) -> ResourceRecord:
-        request_msg = DnsMessage.new_dns_request(request)
-        record = self.record_manager.get_match(request_msg)
-        match_found = self._match_types(record, request_msg)
-        match = record if match_found else None
+    def _get_match(self, request: str) -> RecordMatch:
+        request = DnsMessage.new_dns_request(request)
+        record = self.record_manager.get_matched_record(request)
+        match = RecordMatch(record)
         return match
 
     def stop_listening(self) -> None:

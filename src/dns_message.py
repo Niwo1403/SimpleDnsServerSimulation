@@ -56,7 +56,7 @@ class DnsMessage:
             "dns.a": "",  # IP Agresse
             "dns.count.answers": 0,  # Count of answers
             "dns.flags.authoritative": True,  # True, if authoritative DNS Server or False if it's a recursive DNS server
-            "dns.flags.rcode": R_CODES["NXDOMAIN"],  # response code, desc.: https://support.umbrella.com/hc/en-us/articles/232254248-Common-DNS-return-codes-for-any-DNS-service-and-Umbrella-
+            "dns.flags.rcode": R_CODES["NXDOMAIN"],  # response code, more information see above at R_CODES
             "dns.flags.response": False,  # True, if a result was found
             "dns.ns": None,  # The name of the ns server if there is one
             "dns.resp.ttl": 0  # TTL of the record
@@ -157,7 +157,7 @@ class DnsMessage:
         self.set_values(value_updates)
 
     def set_req(self,
-                name: str, name_server_record: bool = True,
+                name: str, name_server_record: bool = False,
                 recursion_desired: bool or None = None) -> None:
         """
         Sets the main data for a request.
