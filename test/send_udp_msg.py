@@ -1,6 +1,7 @@
 # std libraries
 import socket
 from sys import argv
+from datetime import datetime
 # local
 from dns.dns_message import DnsMessage
 
@@ -22,8 +23,19 @@ dns_msg.set_req(msg, recursion_desired=True)
 msg = dns_msg.build_message()
 
 clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+start_time = datetime.now()
 clientSock.sendto(msg.encode(), (ip_address, port))
 data, server = clientSock.recvfrom(4096)
+end_time = datetime.now()
+
+delta_time = end_time - start_time
 
 sep = "----------"
-print("Request:", msg, sep, "Response:", data.decode(), sep, "server IP & port:", server, sep="\n")
+print(
+    "Time:", delta_time, sep,
+    "Request:", msg, sep,
+    "Response:", data.decode(), sep,
+    "server IP & port:", server,
+    sep="\n"
+)

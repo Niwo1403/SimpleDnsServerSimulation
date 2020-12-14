@@ -6,13 +6,6 @@ from request_server import RequestServer
 from logger import logger
 
 
-# TODO:
-# - Logging in log methoden auslagern
-# - Logger Klasse erstellen
-# - network delay
-# - max 80 Zeilenlänge
-
-
 class RecursiveResolver:
     """
     A recursive resolver,
@@ -67,7 +60,9 @@ class RecursiveResolver:
             logger.log("RecResolver starting resolving...", self.server)
             dns_resp = self._send_root_req(request)
             if dns_request.is_recursion_desired():
-                dns_resp = self._resolve_recursion(request, requested_name, dns_resp)
+                dns_resp = self._resolve_recursion(
+                    request, requested_name, dns_resp
+                )
             self.cache.add_dns_message(requested_name, dns_resp)
         else:
             logger.log("Cache hit!", self.server)

@@ -14,7 +14,9 @@ class SimpleHttpServer:
 
     def __init__(self, msg: str, ip_address: str, port: int = 80):
         self.msg = msg
-        self.server = RequestServer(ip_address, port, self.handle_request, use_udp=False)
+        self.server = RequestServer(
+            ip_address, port, self.handle_request, use_udp=False
+        )
 
     def handle_request(self, request: str) -> str:
         """

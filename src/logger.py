@@ -24,7 +24,8 @@ class Logger:
         which will log into the log filename.
         If the filename is empty, stdout will be used.
         :param key_obj: The object, for which the logfile should be added
-        This object must be passed to the log method, to identify the corresponding logfile.
+        This object must be passed to the log method,
+        to identify the corresponding logfile.
         :param log_file_name: The filename of the logfile.
         """
         self.log_files[key_obj] = log_file_name
@@ -58,7 +59,8 @@ class Logger:
     def flush_all(self):
         """
         Flushed all log files.
-        Should be called before stopping the program, to ensure every log is logged.
+        Should be called before stopping the program,
+        to ensure every log is logged.
         """
         for key_name in self.log_files:
             self.flush(key_name)

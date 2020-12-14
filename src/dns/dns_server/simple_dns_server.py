@@ -44,7 +44,9 @@ class SimpleDnsServer:
             self.handle_request, log_requests=True
         )  # TODO: Deactivate logging later.
 
-    def run(self, in_background: bool = True, logger_key: object = None) -> None:
+    def run(self,
+            in_background: bool = True,
+            logger_key: object = None) -> None:
         """
         Opens the socket and starts receiving requests.
         Will only return after KeyboardInterrupt.

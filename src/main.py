@@ -23,7 +23,8 @@ def main():
     run_till_interrupt(dns_servers, http_servers, recursive_resolver)
 
 
-def load_config(config_file: str = "../rsrc/config.json") -> ({str: str}, {str: str}):
+def load_config(
+        config_file: str = "../rsrc/config.json") -> ({str: str}, {str: str}):
     config_dic = _load_dict_from_json(config_file)
     dns_config = config_dic["DnsConfig"]
     http_config = config_dic["HttpConfig"]

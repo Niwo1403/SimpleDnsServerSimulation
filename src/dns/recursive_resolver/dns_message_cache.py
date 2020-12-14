@@ -26,12 +26,15 @@ class DnsMessageCache:
         self.dns_messages: {str: (datetime, DnsMessage)} = {}
         self.logger_key = logger_key
 
-    def add_dns_message(self, requested_name: str, dns_response: DnsMessage) -> None:
+    def add_dns_message(self,
+                        requested_name: str,
+                        dns_response: DnsMessage) -> None:
         """
         Adds a response by it's name, as well as the DnsMessage,
         witch was received as response from a name server.
-        :param requested_name: The name of the request - e.g. linux.pcpools.fuberlin
-        :param dns_response: An object of DnsMessage, containing the received response.
+        :param requested_name: The name of the request - e.g. pcpools.fuberlin
+        :param dns_response: An object of DnsMessage,
+        containing the received response.
         """
         self.dns_messages[requested_name] = (
             self._get_record_expiry_timestamp(dns_response),
@@ -68,7 +71,8 @@ class DnsMessageCache:
         best_match_name = ""
         best_match_msg = None
         for record_name in self.dns_messages:
-            if len(record_name) > len(best_match_name) and req_name.endswith(record_name):
+            if len(record_name) > len(best_match_name) \
+                    and req_name.endswith(record_name):
                 best_match_name = record_name
                 best_match_msg = self.dns_messages[record_name][1]  # 0 = timestamp, 1 = DNS message
         if best_match_msg is not None:

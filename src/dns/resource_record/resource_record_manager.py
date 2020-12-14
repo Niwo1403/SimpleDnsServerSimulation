@@ -31,14 +31,17 @@ class ResourceRecordManager:
 
     @staticmethod
     def _get_requested_name(request: DnsMessage or str) -> str:
-        return request.get_requested_name() if type(request) != str else request
+        return request.get_requested_name() \
+            if type(request) != str else request
 
     def __init__(self, resource_records: [ResourceRecord]):
         self.resource_records = {}
         for resource_record in resource_records:
             self.resource_records[resource_record.get_name()] = resource_record
 
-    def get_matched_record(self, request: DnsMessage or str) -> ResourceRecord or None:
+    def get_matched_record(self,
+                           request: DnsMessage or str
+                           ) -> ResourceRecord or None:
         """
         Returns the first resource record, which matches the name.
         If no match is found, None is returned.
@@ -48,7 +51,8 @@ class ResourceRecordManager:
         closest_match_key = ""
         closest_match_value = None
         for key in self.resource_records:
-            if len(closest_match_key) < len(key) and requested_name.endswith(key):
+            if len(closest_match_key) < len(key) \
+                    and requested_name.endswith(key):
                 closest_match_key = key
                 closest_match_value = self.resource_records[key]
         return closest_match_value

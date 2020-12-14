@@ -26,7 +26,9 @@ class DnsServerBatch:
         assert len(self.dns_servers) >= 0, \
             "Error, there should at least be one server."
 
-    def run_all(self, log_separator: bool = True, logger_key: object = None) -> None:
+    def run_all(self,
+                log_separator: bool = True,
+                logger_key: object = None) -> None:
         for dns_server in self.dns_servers:
             dns_server.run(logger_key=logger_key)
             if log_separator:
