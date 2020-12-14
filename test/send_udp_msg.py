@@ -2,7 +2,7 @@
 import socket
 from sys import argv
 # local
-from dns_message import DnsMessage
+from dns.dns_message import DnsMessage
 
 if len(argv) < 3:
     ip_address = input("Enter ip address: ")
@@ -18,7 +18,7 @@ else:
 port = int(port)
 
 dns_msg = DnsMessage.new_dns_request()
-dns_msg.set_req(msg)
+dns_msg.set_req(msg, recursion_desired=True)
 msg = dns_msg.build_message()
 
 clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

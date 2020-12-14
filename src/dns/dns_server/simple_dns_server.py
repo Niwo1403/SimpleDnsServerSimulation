@@ -4,7 +4,7 @@ from time import sleep
 # local libraries
 from connection_argument_extractor import ConnectionArgumentExtractor
 from dns.resource_record.record_match import RecordMatch
-from dns_message import DnsMessage
+from dns.dns_message import DnsMessage
 from request_server import RequestServer
 from dns.resource_record.resource_record_manager import ResourceRecordManager
 
@@ -13,7 +13,7 @@ class SimpleDnsServer:
     """
     A DNS server, which handles all incoming DNS lookup request.
     The class only support a very simple version of DNS requests.
-    It will load it's resource records from a zone file,
+    It will load it's resource dns_messages from a zone file,
     which must be passed initially as well as the ip address.
     The run() method can be used to start the server.
     The handle_request() method will be called for incoming requests
@@ -102,7 +102,7 @@ def started_as_main() -> bool:
 if started_as_main():
     arg_ip, arg_port = ConnectionArgumentExtractor(argv).get_arguments()
     dns_server = SimpleDnsServer(
-        "../rsrc/zone_files/root.zone",
+        "../../../rsrc/zone_files/root.zone",
         arg_ip, arg_port
     )
     dns_server.run(in_background=False)

@@ -18,5 +18,8 @@
     "127.0.0.7": "linux.pcpools.fuberlin",
     "127.0.0.8": "macos.pcpools.fuberlin",
     "127.0.0.9": "windows.pcpools.fuberlin"
+  },
+  "RecResConfig": {
+    "root": "127.0.0.11"
   }
 }

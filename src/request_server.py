@@ -1,8 +1,10 @@
-# std libraries
+# std imports
 import socket
 from _thread import start_new_thread
 from datetime import datetime
 from typing import Callable
+# local imports
+from logger import logger
 
 
 class RequestServer:
@@ -33,20 +35,6 @@ class RequestServer:
         all_bin_data = b"".join(recv_data)
         return all_bin_data.decode()
 
-    @staticmethod
-    def _print_client_information(client: (str, str)) -> None:
-        """
-        Prints ip address and port of client, as well as current timestamp.
-        """
-        timestamp_separator = "----------"
-        print(
-            "\n", timestamp_separator, "\n",
-            datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-            ": Client connected from ", client[0], ":", client[1],
-            "\n", timestamp_separator,
-            sep=""
-        )
-
     def __init__(self,
                  ip_address: str, port: int,
                  process_request: Callable,
@@ -58,6 +46,7 @@ class RequestServer:
         self.log_requests = log_requests
         self.socket = None
         self.is_running = False
+        logger.register_logger(self)
 
     def open_socket(self) -> None:
         """
@@ -68,9 +57,10 @@ class RequestServer:
         self.socket.bind(self.sock_information)
         if not self.used_udp:
             self.socket.listen(1)
-        print(
-            "Listening on", self._get_binding_info(),
-            "for", "UDP" if self.used_udp else "TCP"
+        logger.log(
+            f"Listening on {self._get_binding_info()} for "
+            f"{'UDP' if self.used_udp else 'TCP'}",
+            self
         )
 
     def run(self, in_thread: bool = True) -> None:
@@ -122,10 +112,23 @@ class RequestServer:
         """
         recv_msg = conn.decode() if self.used_udp else self.read_tcp_data(conn)
         if self.log_requests:
-            print(recv_msg)
+            logger.log(recv_msg, self)
         reply = self.process_request(recv_msg).encode()
         self.socket.sendto(reply, client) if self.used_udp \
             else conn.sendall(reply)
 
     def _get_binding_info(self) -> str:
         return ":".join(map(str, self.sock_information))
+
+    def _print_client_information(self, client: (str, str)) -> None:
+        """
+        Prints ip address and port of client, as well as current timestamp.
+        """
+        timestamp_separator = "----------"
+        logger.log(
+            f"\n{timestamp_separator}\n"
+            f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}: "
+            f"Client connected from {client[0]}:{client[1]}\n"
+            f"{timestamp_separator}",
+            self
+        )

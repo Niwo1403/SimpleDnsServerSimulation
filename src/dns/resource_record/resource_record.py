@@ -80,6 +80,9 @@ class ResourceRecord:
     def get_name(self) -> str:
         return self.name
 
+    def get_ip_address(self) -> str:
+        return self.value
+
     def get_type(self) -> str:
         return self.rr_type
 

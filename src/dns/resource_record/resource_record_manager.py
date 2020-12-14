@@ -1,6 +1,6 @@
 # local libraries
 from dns.resource_record.resource_record import ResourceRecord
-from dns_message import DnsMessage
+from dns.dns_message import DnsMessage
 
 
 class ResourceRecordManager:
@@ -13,7 +13,7 @@ class ResourceRecordManager:
     @classmethod
     def from_file(cls, filename: str) -> 'ResourceRecordManager':
         """
-        Loads all resource records from a zone file
+        Loads all resource dns_messages from a zone file
         and returns a ResourceRecordManager containing them.
         """
         resource_records = cls.load_resource_records(filename)

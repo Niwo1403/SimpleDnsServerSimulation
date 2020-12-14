@@ -1,5 +1,5 @@
 # local libraries
-from dns.simple_dns_server import SimpleDnsServer
+from dns.dns_server.simple_dns_server import SimpleDnsServer
 
 
 class DnsServerBatch:
@@ -31,6 +31,6 @@ class DnsServerBatch:
             if log_separator:
                 print("---------------")
 
-    def stop_all(self) -> None:
+    def stop(self) -> None:
         for dns_server in self.dns_servers:
             dns_server.stop_listening()

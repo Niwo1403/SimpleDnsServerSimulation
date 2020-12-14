@@ -182,6 +182,21 @@ class DnsMessage:
     def get_requested_type(self) -> int:
         return self.values["dns.qry.type"]
 
+    def get_name_server_name(self) -> str or None:
+        return self.values["dns.ns"]
+
+    def get_address(self) -> str:
+        return self.values["dns.a"]
+
+    def get_ttl(self) -> int:
+        return self.values["dns.resp.ttl"]
+
+    def set_authoritative(self, authoritative: bool) -> None:
+        self.values["dns.flags.authoritative"] = authoritative
+
+    def set_updated_ttl(self, new_ttl: int) -> None:
+        self.values["dns.resp.ttl"] = new_ttl
+
     def match_type(self, other_type: str) -> bool:
         return DnsMessage.QRY_TYPES[other_type] == self.get_requested_type()
 
