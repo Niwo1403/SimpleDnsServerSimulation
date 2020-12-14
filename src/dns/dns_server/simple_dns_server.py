@@ -5,6 +5,7 @@ from time import sleep
 from connection_argument_extractor import ConnectionArgumentExtractor
 from dns.resource_record.record_match import RecordMatch
 from dns.dns_message import DnsMessage
+from logger import logger
 from request_server import RequestServer
 from dns.resource_record.resource_record_manager import ResourceRecordManager
 
@@ -43,12 +44,12 @@ class SimpleDnsServer:
             self.handle_request, log_requests=True
         )  # TODO: Deactivate logging later.
 
-    def run(self, in_background: bool = True) -> None:
+    def run(self, in_background: bool = True, logger_key: object = None) -> None:
         """
         Opens the socket and starts receiving requests.
         Will only return after KeyboardInterrupt.
         """
-        self.record_manager.log_entries()
+        self.record_manager.log_entries(logger_key)
         self.server.open_socket()
         self.server.run()  # will be in background
         if not in_background:
@@ -61,6 +62,7 @@ class SimpleDnsServer:
         :param request: The received request as string, containing the domain.
         :return: The response to answer the client.
         """
+
         match = self._get_match(request)
         dns_resp = self._dns_resp_from_match(match)
         return dns_resp.build_message()
@@ -83,7 +85,7 @@ class SimpleDnsServer:
             try:
                 sleep(60)
             except KeyboardInterrupt:  # Ctrl + C
-                print("Processing stopped, socket will remain blocked.")
+                logger.log("\nProcessing stopped, socket will remain blocked.")
                 break
         self.stop_listening()
 

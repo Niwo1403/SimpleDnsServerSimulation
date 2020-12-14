@@ -10,6 +10,7 @@ from logger import logger
 # - Logging in log methoden auslagern
 # - Logger Klasse erstellen
 # - network delay
+# - max 80 Zeilenlänge
 
 
 class RecursiveResolver:
@@ -32,17 +33,16 @@ class RecursiveResolver:
             ip_address, port,
             self.handle_request
         )
-        self.cache = DnsMessageCache()
-        logger.register_logger(self)
+        self.cache = DnsMessageCache(logger_key=self.server)
 
     def run(self) -> None:
         """
         Opens the socket and starts receiving requests in a new thread.
         """
-        logger.log("RecursiveResolver:", self)
+        logger.log("RecursiveResolver:")
         self.server.open_socket()
         self.server.run()  # will be in background
-        logger.flush(self)
+        logger.flush()
 
     def stop(self) -> None:
         """
@@ -59,18 +59,20 @@ class RecursiveResolver:
         :param request: The received request.
         :return: The response.
         """
-        logger.log(f"RecResolver handling: {request}", self)
+        logger.log(f"RecResolver handling: {request}", self.server)
         dns_request = DnsMessage.new_dns_request(request)
         requested_name = dns_request.get_requested_name()
         dns_resp = self.cache.get_dns_message(requested_name)
         if dns_resp is None:
-            logger.log("RecResolver starting resolving...")
+            logger.log("RecResolver starting resolving...", self.server)
             dns_resp = self._send_root_req(request)
             if dns_request.is_recursion_desired():
                 dns_resp = self._resolve_recursion(request, requested_name, dns_resp)
             self.cache.add_dns_message(requested_name, dns_resp)
+        else:
+            logger.log("Cache hit!", self.server)
         dns_resp.set_authoritative(False)
-        logger.flush(self)
+        logger.flush(self.server)
         return dns_resp.build_message()
 
     def _resolve_recursion(self,

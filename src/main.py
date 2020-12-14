@@ -8,6 +8,7 @@ from typing import Callable
 from dns.dns_server.dns_server_batch import DnsServerBatch
 from dns.recursive_resolver.recursive_resolver import RecursiveResolver
 from http_server.http_server_batch import HttpServerBatch
+from logger import logger
 
 
 def started_as_main() -> bool:
@@ -58,6 +59,7 @@ def run_till_interrupt(
         _sleep_forever()
     except KeyboardInterrupt:  # Ctrl + C
         _stop_servers(stop_after_interrupt)
+        logger.flush_all()
 
 
 def _sleep_forever() -> None:
@@ -68,7 +70,7 @@ def _sleep_forever() -> None:
 def _stop_servers(servers: (DnsServerBatch or HttpServerBatch)) -> None:
     for server_batch in servers:
         server_batch.stop()
-    print("Processing stopped, sockets will remain blocked.")
+    logger.log("Processing stopped, sockets will remain blocked.", flush=True)
 
 
 if started_as_main():

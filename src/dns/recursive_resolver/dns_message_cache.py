@@ -22,9 +22,9 @@ class DnsMessageCache:
     def _get_record_expiry_timestamp(dns_msg: DnsMessage) -> datetime:
         return datetime.now() + timedelta(0, dns_msg.get_ttl())
 
-    def __init__(self):
+    def __init__(self, logger_key: object = None):
         self.dns_messages: {str: (datetime, DnsMessage)} = {}
-        logger.register_logger(self)
+        self.logger_key = logger_key
 
     def add_dns_message(self, requested_name: str, dns_response: DnsMessage) -> None:
         """
@@ -46,7 +46,7 @@ class DnsMessageCache:
         :param req_name: The name to lookup in the cache.
         :return: The DnsMessage containing the cached response.
         """
-        logger.log(f"Cache got request for {req_name}", self)
+        logger.log(f"Cache got request for {req_name}", self.logger_key)
         self.update_dns_messages()
         dns_msg = self._get_best_record_match(req_name)
         return dns_msg

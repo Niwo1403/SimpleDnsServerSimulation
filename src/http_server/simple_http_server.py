@@ -1,4 +1,5 @@
 # local libraries
+from logger import logger
 from request_server import RequestServer
 
 
@@ -11,10 +12,6 @@ class SimpleHttpServer:
 
     DEFAULT_MSG_PATTERN = "HTTP/1.1 200 OK\r\n\r\nRequest\n{}\n\nMsg:\n{}"
 
-    @staticmethod
-    def _log_request(request: str) -> None:
-        print(request)
-
     def __init__(self, msg: str, ip_address: str, port: int = 80):
         self.msg = msg
         self.server = RequestServer(ip_address, port, self.handle_request, use_udp=False)
@@ -23,20 +20,19 @@ class SimpleHttpServer:
         """
         Used to handle an incoming HTTP request.
         """
-        self._log_request(request)
         return self._create_answer(request)
 
     def _create_answer(self, request: str) -> str:
         return SimpleHttpServer.DEFAULT_MSG_PATTERN.format(request, self.msg)
 
-    def run(self) -> None:
+    def run(self, logger_key: object = None) -> None:
         """
         Runs the http socket in background.
         """
-        print("Starting", self.msg)
+        logger.log("Starting {self.msg}", logger_key)
         self.server.open_socket()
         self.server.run()
-        print("----------")
+        logger.log("----------", logger_key)
 
     def stop_listening(self) -> None:
         """

@@ -1,6 +1,7 @@
 # local libraries
 from dns.resource_record.resource_record import ResourceRecord
 from dns.dns_message import DnsMessage
+from logger import logger
 
 
 class ResourceRecordManager:
@@ -52,10 +53,9 @@ class ResourceRecordManager:
                 closest_match_value = self.resource_records[key]
         return closest_match_value
 
-    def log_entries(self) -> None:
+    def log_entries(self, logger_key: object = None) -> None:
         for record in self.resource_records.values():
-            print(
-                record.name, record.ttl,
-                record.rr_class, record.rr_type,
-                record.value
-            )
+            logger.log(" ".join([
+                record.name, str(record.ttl),
+                record.rr_class, record.rr_type, record.value
+            ]), logger_key)

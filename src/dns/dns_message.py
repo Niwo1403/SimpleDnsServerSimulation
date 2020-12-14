@@ -215,7 +215,7 @@ class DnsMessage:
         self.set_values(basic_req_settings, replace=False)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # for testing
     dns_req = DnsMessage.new_dns_request()
     dns_req.set_req("fuberlin")
     print(dns_req.build_message())

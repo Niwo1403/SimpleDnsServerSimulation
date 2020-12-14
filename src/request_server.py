@@ -46,7 +46,8 @@ class RequestServer:
         self.log_requests = log_requests
         self.socket = None
         self.is_running = False
-        logger.register_logger(self)
+        log_file = open(f"../log/{ip_address}.log", "w")
+        logger.register_logger(key_obj=self, log_file_name=f"../log/{ip_address}.log")
 
     def open_socket(self) -> None:
         """
@@ -57,11 +58,8 @@ class RequestServer:
         self.socket.bind(self.sock_information)
         if not self.used_udp:
             self.socket.listen(1)
-        logger.log(
-            f"Listening on {self._get_binding_info()} for "
-            f"{'UDP' if self.used_udp else 'TCP'}",
-            self
-        )
+        logger.log(f"Listening on {self._get_binding_info()} for "
+                   f"{'UDP' if self.used_udp else 'TCP'}")
 
     def run(self, in_thread: bool = True) -> None:
         """
@@ -101,6 +99,7 @@ class RequestServer:
         finally:
             if not self.used_udp:
                 conn.close()
+        logger.flush(self)
 
     def _handle_request(self,
                         conn: str or socket,
@@ -112,7 +111,7 @@ class RequestServer:
         """
         recv_msg = conn.decode() if self.used_udp else self.read_tcp_data(conn)
         if self.log_requests:
-            logger.log(recv_msg, self)
+            logger.log(recv_msg, key_obj=self)
         reply = self.process_request(recv_msg).encode()
         self.socket.sendto(reply, client) if self.used_udp \
             else conn.sendall(reply)
@@ -125,10 +124,7 @@ class RequestServer:
         Prints ip address and port of client, as well as current timestamp.
         """
         timestamp_separator = "----------"
-        logger.log(
-            f"\n{timestamp_separator}\n"
-            f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}: "
-            f"Client connected from {client[0]}:{client[1]}\n"
-            f"{timestamp_separator}",
-            self
-        )
+        logger.log(f"\n{timestamp_separator}\n"
+                   f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}: "
+                   f"Client connected from {client[0]}:{client[1]}\n"
+                   f"{timestamp_separator}", key_obj=self)
