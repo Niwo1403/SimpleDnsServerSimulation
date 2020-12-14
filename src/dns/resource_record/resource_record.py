@@ -25,7 +25,9 @@ class ResourceRecord:
         return cls.load_data_from_list(values)
 
     @classmethod
-    def _split_csv(cls, csv_line: str, delimiter: str, separate_by_tabs: bool) -> [str]:
+    def _split_csv(cls,
+                   csv_line: str, delimiter: str,
+                   separate_by_tabs: bool) -> [str]:
         if separate_by_tabs:
             csv_line = csv_line.replace("\t", delimiter)
         values = csv_line.split("\"")
@@ -79,6 +81,9 @@ class ResourceRecord:
 
     def get_name(self) -> str:
         return self.name
+
+    def get_ip_address(self) -> str:
+        return self.value
 
     def get_type(self) -> str:
         return self.rr_type

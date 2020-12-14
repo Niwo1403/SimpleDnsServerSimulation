@@ -1,5 +1,6 @@
 # local libraries
-from dns.simple_dns_server import SimpleDnsServer
+from logger import logger
+from dns.dns_server.simple_dns_server import SimpleDnsServer
 
 
 class DnsServerBatch:
@@ -25,12 +26,14 @@ class DnsServerBatch:
         assert len(self.dns_servers) >= 0, \
             "Error, there should at least be one server."
 
-    def run_all(self, log_separator: bool = True) -> None:
+    def run_all(self,
+                log_separator: bool = True,
+                logger_key: object = None) -> None:
         for dns_server in self.dns_servers:
-            dns_server.run()
+            dns_server.run(logger_key=logger_key)
             if log_separator:
-                print("---------------")
+                logger.log("---------------", logger_key)
 
-    def stop_all(self) -> None:
+    def stop(self) -> None:
         for dns_server in self.dns_servers:
             dns_server.stop_listening()

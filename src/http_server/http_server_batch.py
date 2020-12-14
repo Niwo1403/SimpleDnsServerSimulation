@@ -18,6 +18,6 @@ class HttpServerBatch:
         for dns_server in self.http_servers:
             dns_server.run()
 
-    def stop_all(self) -> None:
+    def stop(self) -> None:
         for http_server in self.http_servers:
             http_server.stop_listening()

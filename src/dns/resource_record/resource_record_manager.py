@@ -1,6 +1,7 @@
 # local libraries
 from dns.resource_record.resource_record import ResourceRecord
-from dns_message import DnsMessage
+from dns.dns_message import DnsMessage
+from logger import logger
 
 
 class ResourceRecordManager:
@@ -13,7 +14,7 @@ class ResourceRecordManager:
     @classmethod
     def from_file(cls, filename: str) -> 'ResourceRecordManager':
         """
-        Loads all resource records from a zone file
+        Loads all resource dns_messages from a zone file
         and returns a ResourceRecordManager containing them.
         """
         resource_records = cls.load_resource_records(filename)
@@ -30,14 +31,17 @@ class ResourceRecordManager:
 
     @staticmethod
     def _get_requested_name(request: DnsMessage or str) -> str:
-        return request.get_requested_name() if type(request) != str else request
+        return request.get_requested_name() \
+            if type(request) != str else request
 
     def __init__(self, resource_records: [ResourceRecord]):
         self.resource_records = {}
         for resource_record in resource_records:
             self.resource_records[resource_record.get_name()] = resource_record
 
-    def get_matched_record(self, request: DnsMessage or str) -> ResourceRecord or None:
+    def get_matched_record(self,
+                           request: DnsMessage or str
+                           ) -> ResourceRecord or None:
         """
         Returns the first resource record, which matches the name.
         If no match is found, None is returned.
@@ -47,15 +51,15 @@ class ResourceRecordManager:
         closest_match_key = ""
         closest_match_value = None
         for key in self.resource_records:
-            if len(closest_match_key) < len(key) and requested_name.endswith(key):
+            if len(closest_match_key) < len(key) \
+                    and requested_name.endswith(key):
                 closest_match_key = key
                 closest_match_value = self.resource_records[key]
         return closest_match_value
 
-    def log_entries(self) -> None:
+    def log_entries(self, logger_key: object = None) -> None:
         for record in self.resource_records.values():
-            print(
-                record.name, record.ttl,
-                record.rr_class, record.rr_type,
-                record.value
-            )
+            logger.log(" ".join([
+                record.name, str(record.ttl),
+                record.rr_class, record.rr_type, record.value
+            ]), logger_key)

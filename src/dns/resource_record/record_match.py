@@ -19,7 +19,8 @@ class RecordMatch:
         return self.resource_record is not None
 
     def get_possible_name_server_name(self) -> str or None:
-        return self.resource_record.get_name() if self._is_name_server_record() else None
+        return self.resource_record.get_name() \
+            if self._is_name_server_record() else None
 
     def get_value(self) -> str:
         return self.resource_record.value
@@ -28,4 +29,5 @@ class RecordMatch:
         return self.resource_record.ttl
 
     def _is_name_server_record(self) -> bool:
-        return self.resource_record is not None and self.resource_record.get_type() == "NS"
+        return self.resource_record is not None \
+               and self.resource_record.get_type() == "NS"

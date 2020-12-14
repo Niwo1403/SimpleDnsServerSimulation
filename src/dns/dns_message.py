@@ -71,7 +71,8 @@ class DnsMessage:
     @classmethod
     def new_dns_request(cls, values: {} or str = None) -> 'DnsMessage':
         """
-        Creates a dns request message from the dns message, by setting the dns request default values.
+        Creates a dns request message from the dns message,
+        by setting the dns request default values.
         Should be called directly after the constructor.
         :return: Self, which will be dns request message.
         """
@@ -83,7 +84,8 @@ class DnsMessage:
     @classmethod
     def new_dns_response(cls, values: {} or str = None) -> 'DnsMessage':
         """
-        Creates a dns response message from the dns message, by setting the dns response default values.
+        Creates a dns response message from the dns message,
+        by setting the dns response default values.
         Should be called directly after the constructor.
         :return: Self, which will be dns response message.
         """
@@ -112,7 +114,9 @@ class DnsMessage:
     def set_value(self, key: str, value: str or None = None) -> None:
         self.values[key] = value
 
-    def set_values(self, repl_values: {str: str or int or bool or None}, replace: bool = True) -> None:
+    def set_values(self,
+                   repl_values: {str: str or int or bool or None},
+                   replace: bool = True) -> None:
         """
         Updates the current values by the ones in repl_values.
         If replace is True, existing values will be replaced.
@@ -128,10 +132,14 @@ class DnsMessage:
         return self.values[key]
 
     def set_empty_resp(self, authoritative: bool = True):
-        self.set_resp("", answers=0, set_positive_rcode=False, authoritative=authoritative)
+        self.set_resp(
+            "", answers=0, set_positive_rcode=False,
+            authoritative=authoritative
+        )
 
-    def set_resp(self, address: str,
-                 answers: int = 1, authoritative: bool = True, set_positive_rcode: bool = True,
+    def set_resp(self,
+                 address: str, answers: int = 1,
+                 authoritative: bool = True, set_positive_rcode: bool = True,
                  ttl: int = 0, name_server_name: str or None = None) -> None:
         """
         Sets the data for a response.
@@ -162,8 +170,10 @@ class DnsMessage:
         """
         Sets the main data for a request.
         :param name: The domain to lookup.
-        :param name_server_record: If name_server_record is False, it will be a A record.
-        :param recursion_desired: If recursion_desired is None, it won't be changed.
+        :param name_server_record: If name_server_record is False,
+        it will be a A record.
+        :param recursion_desired: If recursion_desired is None,
+        it won't be changed.
         """
         value_updates = {
             "dns.qry.name": name,
@@ -181,6 +191,21 @@ class DnsMessage:
 
     def get_requested_type(self) -> int:
         return self.values["dns.qry.type"]
+
+    def get_name_server_name(self) -> str or None:
+        return self.values["dns.ns"]
+
+    def get_address(self) -> str:
+        return self.values["dns.a"]
+
+    def get_ttl(self) -> int:
+        return self.values["dns.resp.ttl"]
+
+    def set_authoritative(self, authoritative: bool) -> None:
+        self.values["dns.flags.authoritative"] = authoritative
+
+    def set_updated_ttl(self, new_ttl: int) -> None:
+        self.values["dns.resp.ttl"] = new_ttl
 
     def match_type(self, other_type: str) -> bool:
         return DnsMessage.QRY_TYPES[other_type] == self.get_requested_type()
@@ -200,7 +225,7 @@ class DnsMessage:
         self.set_values(basic_req_settings, replace=False)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # for testing
     dns_req = DnsMessage.new_dns_request()
     dns_req.set_req("fuberlin")
     print(dns_req.build_message())
