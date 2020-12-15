@@ -33,7 +33,6 @@ incoming requests.
 All http requests will be responded with "200 OK" as head and the incoming request and servername (e.g. windows.pcpools.fuberlin) as body.
 
 
-
 ## test folder:
 Includes files or scripts used to test the server.
 This folder has only the send_udp_msg.py file in it. 
@@ -41,3 +40,8 @@ This file is the "client" from which we can send UDP requests to the resolver.
 
 
 # What works, what not?
+All milestones are implemented. 
+
+* Logging is implemented in a different format, but basic logging works. 
+* The Proxy can only process simple HTTP requests, so most websites look really plain. 
+* All HTTP servers are running

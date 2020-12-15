@@ -10,7 +10,7 @@ from main import main as run_all_server
 run_all_server(in_background=True)
 
 
-rec_res_address = ("127.0.0.10", 53053)  # recursiv resolver
+rec_res_address = ("127.0.0.10", 53053)  # recursive resolver
 req_domain = "windows.pcpools.fuberlin"
 
 dns_msg = DnsMessage.new_dns_request()
