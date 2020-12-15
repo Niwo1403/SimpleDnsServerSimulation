@@ -1,11 +1,13 @@
 ### Setup:
+#### PyCharm:
 Import the SimpleDnsServer folder as a project in PyCharm. 
 To run, right click a file and select "Run 'file.py'". If there is a file not found error you may need to set the 
 working directory of the configuration (top right) to "pathToDirectory/SimpleDnsServer/src". 
 (In the top right, click the drop down menu left of the green "run" button. Then select "edit configurations" and set 
 working directory to "pathToDirectory/SimpleDnsServer/src")
 
-Alternatively open your Terminal and navigate to the src folder.
+#### Terminal:
+To run files in the terminal, just type "python fileName.py", "py fileName.py" or "fileName.py" depending on your configurations.
 
 ###Running the DNS servers:
 To test the server, run the run.py in the src folder.
