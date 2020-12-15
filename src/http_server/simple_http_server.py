@@ -6,7 +6,7 @@ from request_server import RequestServer
 class SimpleHttpServer:
     """
     A simplified HTTP server, which takes all incoming request
-    and will return the request as well as a constant msg.
+    and will return the request as well as a constant req_domain.
     The HTTP response header is constant.
     """
 

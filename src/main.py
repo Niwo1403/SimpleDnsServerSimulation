@@ -15,12 +15,13 @@ def started_as_main() -> bool:
     return __name__ == "__main__"
 
 
-def main():
+def main(in_background: bool = False) -> None:
     dns_config, http_config, rec_res_config = load_config()
     dns_servers = run_server_batch(DnsServerBatch, dns_config)
     http_servers = run_server_batch(HttpServerBatch, http_config)
     recursive_resolver = run_recursive_resolver(rec_res_config)
-    run_till_interrupt(dns_servers, http_servers, recursive_resolver)
+    if not in_background:
+        run_till_interrupt(dns_servers, http_servers, recursive_resolver)
 
 
 def load_config(
@@ -55,7 +56,7 @@ def run_recursive_resolver(rec_res_config: {str: str}) -> RecursiveResolver:
 
 
 def run_till_interrupt(
-        *stop_after_interrupt: (DnsServerBatch or HttpServerBatch)):
+        *stop_after_interrupt: (DnsServerBatch or HttpServerBatch)) -> None:
     try:
         _sleep_forever()
     except KeyboardInterrupt:  # Ctrl + C
@@ -71,7 +72,7 @@ def _sleep_forever() -> None:
 def _stop_servers(servers: (DnsServerBatch or HttpServerBatch)) -> None:
     for server_batch in servers:
         server_batch.stop()
-    logger.log("Processing stopped, sockets will remain blocked.", flush=True)
+    logger.log("Processing stopped, sockets will remain blocked until program exits.", flush=True)
 
 
 if started_as_main():
