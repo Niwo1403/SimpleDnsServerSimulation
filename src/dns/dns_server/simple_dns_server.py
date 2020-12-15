@@ -42,7 +42,7 @@ class SimpleDnsServer:
         self.server = RequestServer(
             self.ip_address, self.port,
             self.handle_request, log_requests=True
-        )  # TODO: Deactivate logging later.
+        )
 
     def run(self,
             in_background: bool = True,
