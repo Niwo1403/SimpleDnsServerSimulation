@@ -31,7 +31,7 @@ class SimpleHttpServer:
         """
         Runs the http socket in background.
         """
-        logger.log("Starting {self.msg}", logger_key)
+        logger.log(f"Starting {self.msg}", logger_key)
         self.server.open_socket()
         self.server.run()
         logger.log("----------", logger_key)

@@ -51,6 +51,7 @@ class SimpleDnsServer:
         Opens the socket and starts receiving requests.
         Will only return after KeyboardInterrupt.
         """
+        logger.log("Records:", logger_key)
         self.record_manager.log_entries(logger_key)
         self.server.open_socket()
         self.server.run()  # will be in background
