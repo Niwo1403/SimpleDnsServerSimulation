@@ -15,7 +15,7 @@ In terminal this can be done by calling run.py in the src folder.
 In Pycharm you can right click the file after opening it and select run.
 The run.py file initializes all the dns servers, the http servers, the resolver and the proxy. 
 Then it sends a request to the resolver, which asks the root server, then asks the dns servers etc. 
-The server will log their their requests into the corresponding log file in 'log/<ip>.log'.
+The server will log their requests into the corresponding log file in 'log/<ip>.log'.
 
 The initial request and the final response, as well as the time took for the request will be printed to console as well.
 (so the data, the client sees)
@@ -32,4 +32,3 @@ This will load the website for linux.pxpools.fuberlin - containing the received 
 For unknown endings like 'google.com' the normal DNS lookup will be used.
 (This may throw a lot of warnings in the console, but should work. 
 E.g. there are exceptions because the relative paths doesn't work, since the proxy uses an other syntax for the url.)
-
