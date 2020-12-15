@@ -46,7 +46,7 @@ class RecursiveResolver:
 
     def handle_request(self, request: str) -> str:
         """
-        Handles a DNS request, which can ba recursive.
+        Handles a DNS request, which can be recursive.
         After resolving the possibly recursive request,
         a JSON response is generated and returned as string.
         :param request: The received request.

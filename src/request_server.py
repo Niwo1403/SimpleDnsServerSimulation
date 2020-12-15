@@ -4,8 +4,11 @@ from _thread import start_new_thread
 from datetime import datetime
 from time import sleep
 from typing import Callable
+
 # local imports
 from logger import logger
+from dns.dns_message import DnsMessage
+
 
 
 def simulate_network_delay():
@@ -99,7 +102,7 @@ class RequestServer:
 
     def _handle_new_client(self,
                            conn: str or socket, client: (str, str)) -> None:
-        self._print_client_information(client)
+        # self._print_client_information(client)
         try:
             self._handle_request(conn, client)
         # ignore exceptions, since the server doesn't care
@@ -118,9 +121,13 @@ class RequestServer:
         """
         simulate_network_delay()  # sending request
         recv_msg = conn.decode() if self.used_udp else self.read_tcp_data(conn)
-        if self.log_requests:
-            logger.log(recv_msg, key_obj=self)
         reply = self.process_request(recv_msg).encode()
+        if self.log_requests:
+            logger.log(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} |"
+                       f" {client[0]}:{client[1]} |"
+                       f" Req rec: {DnsMessage.from_str(recv_msg).get_requested_name()} |"
+                       f" #resp snd: 1"
+                       , key_obj=self)
         self.socket.sendto(reply, client) if self.used_udp \
             else conn.sendall(reply)
         simulate_network_delay()  # sending response
