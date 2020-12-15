@@ -9,6 +9,7 @@ from dns.dns_server.dns_server_batch import DnsServerBatch
 from dns.recursive_resolver.recursive_resolver import RecursiveResolver
 from http_server.http_server_batch import HttpServerBatch
 from logger import logger
+from proxy import Proxy
 
 
 def started_as_main() -> bool:
@@ -20,8 +21,9 @@ def main(in_background: bool = False) -> None:
     dns_servers = run_server_batch(DnsServerBatch, dns_config)
     http_servers = run_server_batch(HttpServerBatch, http_config)
     recursive_resolver = run_recursive_resolver(rec_res_config)
+    proxy = run_proxy()
     if not in_background:
-        run_till_interrupt(dns_servers, http_servers, recursive_resolver)
+        run_till_interrupt(dns_servers, http_servers, recursive_resolver, proxy)
 
 
 def load_config(
@@ -53,6 +55,12 @@ def run_recursive_resolver(rec_res_config: {str: str}) -> RecursiveResolver:
     rec_resolver = RecursiveResolver(root_name_server_addr)
     rec_resolver.run()
     return rec_resolver
+
+
+def run_proxy() -> Proxy:
+    proxy = Proxy()
+    proxy.run()
+    return proxy
 
 
 def run_till_interrupt(
