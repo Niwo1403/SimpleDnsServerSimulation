@@ -4,6 +4,8 @@
 
 ## log folder: 
 Here, the logs of the servers are stored. 
+The log will be appended to the current log, so the files will contain the logs of all time (but are initially empty).
+So logs couldn't get lost by a server restart or interrupt of any kind (closing window, task manager kill, ...).
 
 ## rsrc folder:
 In this folder, the .zone files contain the resource records for the server system. So every server has a file in which his
@@ -45,4 +47,4 @@ All milestones are implemented.
 * Logging is implemented in a different format, but basic logging works. 
 * The Proxy can only process simple HTTP requests, so most websites look really plain. 
 * All HTTP servers are running
-* The log will be appended to the current log, so the files will contain the logs of all time (but are initially empty). So logs couldn't get lost by a server restart or interrupt of any kind (closing window, task manager kill, ...).
+* Restart save log
